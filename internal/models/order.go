@@ -6,9 +6,23 @@ import (
 	"time"
 )
 
+const (
+	OrderStatusPlaced       = "Order Placed"
+	OrderStatusPreparing    = "Preparing"
+	OrderStatusCooking      = "Cooking"
+	OrderStatusQualityCheck = "Quality Check"
+	OrderStatusReady        = "Ready"
+)
+
 var (
-	OrderStatuses = []string{"Order Placed", "Preparing", "Cooking", "Quality Check", "Order Ready"}
-	PizzaSauces   = []string{
+	OrderStatuses = []string{
+		OrderStatusPlaced,
+		OrderStatusPreparing,
+		OrderStatusCooking,
+		OrderStatusQualityCheck,
+		OrderStatusReady,
+	}
+	PizzaSauces = []string{
 		"Tomato Sauce", "BBQ Sauce", "Buffalo Sauce", "Garlic Oil", "Truffle Oil", "Pesto",
 	}
 	Cheeses = []string{
@@ -31,7 +45,9 @@ var (
 		"Make Your Own",
 		"Garlic",
 	}
-	PizzaSizes        = []string{"Small", "Medium", "Large", "X-Large", "Family"}
+	PizzaCrust = []string{"Thin", "Regular", "Deep Dish", "Cheesy Crust", "Vegan Cheesy Crust"}
+	PizzaSizes = []string{"Small", "Medium", "Large", "X-Large", "Family"}
+	// map[string][]string allows me to create a junction table
 	ToppingCategories = map[string][]string{
 		"Meats": {
 			"Pepperoni", "Sausage", "Chicken", "Bacon", "Ham", "Mince", "Anchovies",

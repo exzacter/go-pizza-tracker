@@ -10,11 +10,12 @@ import (
 
 func RegisterCustomValidators() {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
-		v.registerValidation("valid_pizza_type", createSliceValidator(models.PizzaTypes))
-		v.registerValidation("valid_pizza_size", createSliceValidator(models.PizzaSizes))
-		v.registerValidation("valid_topping", createToppingValidator())
-		v.registerValidation("valid_pizza_size", createSliceValidator(models.DietaryRequirements))
-		v.registerValidation("valid_pizza_size", createSliceValidator(models.Allergies))
+		v.RegisterValidation("valid_pizza_type", createSliceValidator(models.PizzaTypes))
+		v.RegisterValidation("valid_pizza_size", createSliceValidator(models.PizzaSizes))
+		v.RegisterValidation("valid_topping", createToppingValidator())
+		v.RegisterValidation("valid_dietary_requirement", createSliceValidator(models.DietaryRequirements))
+		v.RegisterValidation("valid_allergy", createSliceValidator(models.Allergies))
+		v.RegisterValidation("valid_crust", createSliceValidator(models.PizzaCrust))
 	}
 }
 
