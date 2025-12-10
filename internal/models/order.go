@@ -84,9 +84,9 @@ var (
 		"Garlic":            {"Garlic", "Mozzarella", "Garlic Oil"},
 		"Make Your Own":     {},
 	}
-	DietaryRequirements = []string{"Vegetarian", "Vegan", "Gluten-Free", "Dairy-Free", "Nut-Free", "Halal", "Kosher"}
+	DietaryRequirements = []string{"Vegetarian", "Vegan", "Gluten-Free", "Dairy-Free", "Nut-Free", "Halal", "Kosher", "None"}
 
-	Allergies = []string{"Gluten", "Dairy", "Nuts", "Peanuts", "Shellfish", "Soy", "Eggs", "Fish", "Sesame"}
+	Allergies = []string{"Gluten", "Dairy", "Nuts", "Peanuts", "Shellfish", "Soy", "Eggs", "Fish", "Sesame", "None"}
 )
 
 type OrderModel struct {
@@ -108,6 +108,8 @@ type OrderItem struct {
 	OrderID            string                        `gorm:"index;not null" json:"orderId"`
 	Size               string                        `gorm:"not null" json:"size"`
 	Pizza              string                        `gorm:"not null" json:"pizza"`
+	Cheese             string                        `gorm:"not null" json:"cheese"`
+	Crust              string                        `gorm:"not null" json:"crust"`
 	Instructions       string                        `json:"instruction"`
 	DietaryRequirement []OrderItemDietaryRequirement `gorm:"foreignKey:OrderItemID" json:"dietaryRequirement"`
 	Toppings           []OrderItemTopping            `gorm:"foreignKey:OrderItemID" json:"toppings"`

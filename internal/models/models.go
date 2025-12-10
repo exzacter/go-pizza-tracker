@@ -15,12 +15,19 @@ func InitDB(dataSourceName string) (*DBModel, error) {
 	db, err := gorm.Open(sqlite.Open(dataSourceName), &gorm.Config{})
 
 	if err != nil {
-		return nil, fmt.Errorf("Failed to migrate database: %v", err)
+		return nil, fmt.Errorf("failed to open database: %v", err)
 	}
 
-	err = db.AutoMigrate(&Order{}, &OrderItem{})
+	// Include ALL tables in AutoMigrate
+	err = db.AutoMigrate(
+		&Order{},
+		&OrderItem{},
+		&OrderItemTopping{},
+		&OrderItemDietaryRequirement{},
+		&OrderItemAllergy{},
+	)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to migrate database %v", err)
+		return nil, fmt.Errorf("failed to migrate database: %v", err)
 	}
 
 	dbModel := &DBModel{

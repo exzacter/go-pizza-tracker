@@ -1,0 +1,188 @@
+{{template "top" .}}
+<title> New Pizza Order </title>
+</head>
+<body class="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 min-h-screen">
+<div class="flex items-center justify-center p-6 md:p-8">
+	<div class="bg-white/80 backdrop-blur-sm p-8 md:p-10 rounded-3xl shadow-xl border border-white/20 max-w-2xl w-full">
+		<h1 class="text-4xl font-bold text-gray-900 mb-8 text-center tracking-tight"> New Pizza Order </h1>
+		<form action="/new-order" method="POST" class="space-y-6">
+			<div class="space-y-5">
+				<h2 class="text-xl font-semibold text-gray-800 mb-4">
+				Customer Information
+				</h2>
+				<div>
+					<label class="block text-gray-700 text-sm font-medium mb-2" for="name">Name</label>
+					<input class="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all" type="text" name="name" id="name" required minlength="2" maxlength="100">
+				</div>
+				<div>
+					<label class="block text-gray-700 text-sm font-medium mb-2" for="phone">Phone</label>
+					<input class="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all" type="text" name="phone" id="phone" required minlength="10" maxlength="20">
+				</div>
+				<div>
+					<label class="block text-gray-700 text-sm font-medium mb-2" for="address">Address</label>
+					<input class="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all" type="text" name="address" id="address" required minlength="10" maxlength="200">
+				</div>
+			</div>
+			<div class="space-y-5">
+				<div class="flex justify-between items-center"> 
+					<h2 class="text-xl font-semibold text-gray-800">Pizzas</h2> 
+					<button type="button" onclick="addPizza()" class="px-4 py-2 text-sm font-medium text-emerald-600 hover:text-emerald-700 border border-emerald-300 rounded-xl hover:border-emerald-400 hover:bg-emerald-50 active:scale-95 transition-all">Add Another Pizza</button>
+				</div>
+			</div>
+			<div id="pizzas" class="space-y-4"></div>
+			<button type="submit" class="w-full bg-emerald-500 text-white font-semibold py-3 px-3 rounded-xl hover:bg-emerald-600 active:scale-[0.99] transition-all shadow-lg shadow-emerald-500/30"> Place Order
+			</button>
+		</form>
+	</div>
+</div>
+
+<template id="pizzaTemplate">
+	<div class="pizza-item border border-gray-200 rounded-2xl p-5 bg-gray-50/50">
+		<div class="flex justify-between items-center mb-4">
+			<h3 class="text-lg font-semibold text-gray-800">Pizza #<span class="pizza-number"></span></h3>
+			<button type="button" onclick="removePizza(this)" class="text-red-500 hover:text-red-700 font-medium text-sm transition-colors">Remove</button>
+		</div>
+		
+		<!-- Row 1: Type and Size -->
+		<div class="grid grid-cols-2 gap-4 mb-4">
+			<div>
+				<label class="block text-gray-700 text-sm font-medium mb-2">Pizza Type</label>
+				<select name="pizza" required class="pizza-type-select w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all bg-white">
+					{{range $.PizzaTypes}}
+					<option value="{{.}}">{{.}}</option>
+					{{end}}
+				</select>
+			</div>
+			<div>
+				<label class="block text-gray-700 text-sm font-medium mb-2">Size</label>
+				<select name="size" required class="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all bg-white">
+					{{range $.PizzaSizes}}
+					<option value="{{.}}">{{.}}</option>
+					{{end}}
+				</select>
+			</div>
+		</div>
+
+		<!-- Crust -->
+		<div class="mb-4">
+			<label class="block text-gray-700 text-sm font-medium mb-2">Crust</label>
+			<select name="crust" class="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all bg-white">
+				{{range $.PizzaCrust}}
+				<option value="{{.}}">{{.}}</option>
+				{{end}}
+			</select>
+		</div>
+
+		<!-- Toggle for toppings customization -->
+		<div class="mb-4">
+			<label class="flex items-center space-x-2 cursor-pointer">
+				<input type="checkbox" class="customize-toggle w-4 h-4 text-emerald-500 rounded focus:ring-emerald-400">
+				<span class="text-gray-700 text-sm font-medium">Customize toppings</span>
+			</label>
+		</div>
+
+		<!-- Toppings Section (hidden by default) -->
+		<div class="mb-4 toppings-section hidden">
+			<label class="block text-gray-700 text-sm font-medium mb-2">Toppings <span class="text-gray-400 text-xs">(defaults are pre-selected)</span></label>
+			<div class="border border-gray-200 rounded-xl p-4 bg-white max-h-64 overflow-y-auto">
+				{{range $category, $toppings := $.ToppingCategories}}
+				<div class="mb-4 last:mb-0">
+					<h4 class="text-sm font-medium text-gray-600 mb-2">{{$category}}</h4>
+					<div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+						{{range $toppings}}
+						<label class="flex items-center space-x-2 cursor-pointer topping-label">
+							<input type="checkbox" name="topping" value="{{.}}" class="topping-checkbox w-4 h-4 text-emerald-500 rounded focus:ring-emerald-400">
+							<span class="text-gray-700 text-sm topping-name">{{.}}</span>
+						</label>
+						{{end}}
+					</div>
+				</div>
+				{{end}}
+			</div>
+		</div>
+
+		<!-- Special Instructions -->
+		<div>
+			<label class="block text-gray-700 text-sm font-medium mb-2">Special Instructions</label>
+			<textarea maxlength="200" name="instruction" rows="2" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all resize-none" placeholder="Any special requests..."></textarea>
+		</div>
+	</div>
+</template>
+
+<script>
+	let pizzaCount = 0;
+
+	const defaultToppings = {
+		{{range $pizza, $toppings := $.PizzaDefaultToppings}}
+		"{{$pizza}}": [{{range $i, $t := $toppings}}{{if $i}},{{end}}"{{$t}}"{{end}}],
+		{{end}}
+	};
+
+	function updateToppings(pizzaItem) {
+		const pizzaType = pizzaItem.querySelector(".pizza-type-select").value;
+		const defaults = defaultToppings[pizzaType] || [];
+		
+		// Reset all checkboxes
+		pizzaItem.querySelectorAll(".topping-checkbox").forEach(checkbox => {
+			const toppingName = checkbox.dataset.topping;
+			
+			// Check if this topping is a default for the selected pizza
+			if (defaults.includes(toppingName)) {
+				checkbox.checked = true;
+				checkbox.closest(".topping-label").classList.add("bg-emerald-50", "rounded-lg", "p-1", "-m-1");
+			} else {
+				checkbox.checked = false;
+				checkbox.closest(".topping-label").classList.remove("bg-emerald-50", "rounded-lg", "p-1", "-m-1");
+			}
+		});
+	}
+
+	function addPizza() {
+		const clone = document.getElementById("pizzaTemplate").content.cloneNode(true);
+		const pizzaIndex = pizzaCount++;
+		
+		const pizzaItem = clone.querySelector(".pizza-item");
+		pizzaItem.dataset.index = pizzaIndex;
+		clone.querySelector(".pizza-number").textContent = pizzaIndex + 1;
+		
+		// Update topping checkboxes with pizza index and data attribute
+		clone.querySelectorAll(".topping-checkbox").forEach(checkbox => {
+			const toppingName = checkbox.value;
+			checkbox.dataset.topping = toppingName;
+			checkbox.value = pizzaIndex + ":" + toppingName;
+		});
+
+		// Pizza type change listener
+		const pizzaSelect = clone.querySelector(".pizza-type-select");
+		pizzaSelect.addEventListener("change", function() {
+			updateToppings(this.closest(".pizza-item"));
+		});
+
+		// Customize toggle listener
+		const customizeToggle = clone.querySelector(".customize-toggle");
+		const toppingsSection = clone.querySelector(".toppings-section");
+		customizeToggle.addEventListener("change", function() {
+			toppingsSection.classList.toggle("hidden", !this.checked);
+		});
+		
+		document.getElementById("pizzas").appendChild(clone);
+
+		// Set defaults for initial pizza type
+		const addedPizza = document.querySelector(".pizza-item:last-child");
+		updateToppings(addedPizza);
+	}
+
+	function removePizza(btn) {
+		btn.closest(".pizza-item").remove();
+		
+		document.querySelectorAll(".pizza-item").forEach((item, index) => {
+			item.querySelector(".pizza-number").textContent = index + 1;
+		});
+		
+		pizzaCount = document.querySelectorAll(".pizza-item").length;
+	}
+
+	addPizza();
+</script>
+
+{{template "bottom"}}
